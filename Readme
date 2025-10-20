@@ -1,0 +1,87 @@
+# DevOps Todo
+
+A full-stack productivity application with passkey (WebAuthn) authentication, task management, reminders, and productivity insights. The frontend is built with vanilla HTML, CSS, and JavaScript while the backend uses Node.js, Express, and MongoDB.
+
+## Features
+
+- 🔐 Passwordless registration and login via WebAuthn passkeys
+- ✅ Task CRUD with priorities, due dates, notes, and tags
+- 🔎 Filtering by Today, This Week, All plus search, tags, and sorting
+- ⏰ Local notification reminders based on due dates
+- 📊 Dashboard with daily/weekly summaries and streak tracking
+- 🌓 Responsive UI with dark/light mode toggle
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 18+
+- MongoDB 5+
+- A browser that supports WebAuthn (most modern browsers)
+
+### Installation
+
+```bash
+npm install
+cp .env.example .env
+```
+
+Update `.env` with your MongoDB connection string and production-ready secrets. For local development, the defaults target `http://localhost:3000`.
+
+### Running the app
+
+```bash
+npm run start
+```
+
+The server runs on `http://localhost:3000` and serves the frontend from the same origin. In development you can also use `npm run dev` with `nodemon` for auto-reloads.
+
+### WebAuthn configuration
+
+Ensure the `ORIGIN` and `RP_ID` values in your `.env` match the hostname you use to access the app. For local testing these default to `http://localhost:3000` and `localhost` respectively.
+
+If you need to expose the app over HTTPS (required for passkeys outside of `localhost`), consider tools like [ngrok](https://ngrok.com/) or run behind a reverse proxy that terminates TLS.
+
+### Folder structure
+
+```
+config/           MongoDB and session configuration
+controllers/      Route handlers for auth, tasks, and dashboard
+middleware/       Reusable Express middlewares
+models/           Mongoose schemas (User, Task)
+routes/           Express routers for API endpoints
+public/           Static frontend (HTML, CSS, JS)
+utils/            WebAuthn helper utilities
+server.js         Application entrypoint
+```
+
+### Available API endpoints
+
+| Method | Path                          | Description |
+| ------ | ----------------------------- | ----------- |
+| POST   | `/api/auth/register/begin`    | Start WebAuthn registration |
+| POST   | `/api/auth/register/complete` | Finish WebAuthn registration |
+| POST   | `/api/auth/login/begin`       | Start WebAuthn login |
+| POST   | `/api/auth/login/complete`    | Finish WebAuthn login |
+| GET    | `/api/auth/profile`           | Fetch current session user |
+| POST   | `/api/auth/logout`            | Destroy the session |
+| GET    | `/api/tasks`                  | List tasks with filters |
+| POST   | `/api/tasks`                  | Create a task |
+| PUT    | `/api/tasks/:id`              | Update a task |
+| PATCH  | `/api/tasks/:id/toggle`       | Toggle completion |
+| DELETE | `/api/tasks/:id`              | Delete a task |
+| GET    | `/api/dashboard/summary`      | Productivity stats |
+
+## Testing
+
+Manual end-to-end testing can be done entirely within the browser once the server is running. Automated tests are not yet provided.
+
+## Security considerations
+
+- Replace the session secret and configure HTTPS in production.
+- WebAuthn requires a trusted origin; use TLS certificates for deployed environments.
+- Set secure cookie flags (`secure`, `sameSite`) appropriately for your deployment target.
+
+## License
+
+MIT

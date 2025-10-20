@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard — DevOps Todo</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      /* Dashboard-only layout: lock page height; tasks scroll inside tile */
+      html, body { height: 100%; }
+      body { overflow: hidden; }
+      main.container { height: calc(100dvh - 72px); overflow: hidden; }
+
+      /* Bento grid: 12 cols × 8 rows */
+      .bento { height: 100%; display: grid; gap: 16px; grid-template-columns: repeat(12, 1fr); grid-template-rows: repeat(8, 1fr); }
+      .bento .card { margin: 0; height: 100%; display: flex; flex-direction: column; }
+      .bento .card:hover { transform: none; box-shadow: 0 10px 30px rgba(15,23,42,.06); }
+
+      /* Tile placement */
+      #dashboard-card { grid-column: 1 / span 8; grid-row: 1 / span 3; }
+      #filters-card  { grid-column: 9 / span 4; grid-row: 1 / span 4; }
+      #create-card   { grid-column: 1 / span 8; grid-row: 4 / span 5; }
+      #tasks-card    { grid-column: 9 / span 4; grid-row: 5 / span 4; overflow: hidden; }
+
+      /* Chart grows within tile */
+      #dashboard-card .chart { flex: 1; min-height: 0; }
+
+      /* New Task form compaction */
+      #create-card .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+      #create-card .field.span-2 { grid-column: 1 / span 2; }
+      #create-card button[type="submit"] { margin-top: 4px; }
+
+      /* Tasks list scrolls within its tile */
+      #tasks-card .card-header { margin-bottom: 0.5rem; }
+      #tasks-card .task-list { flex: 1; min-height: 0; overflow: auto; padding-right: 4px; }
+
+      /* Compact filters */
+      #filters-card .stack { gap: 0.5rem; }
+
+      /* Narrow screens: stack with safe heights */
+      @media (max-width: 1100px) {
+        body { overflow: auto; }
+        main.container { height: auto; overflow: visible; }
+        .bento { grid-template-columns: 1fr; grid-template-rows: none; }
+        #dashboard-card, #filters-card, #create-card, #tasks-card { grid-column: auto; grid-row: auto; height: auto; }
+        #tasks-card .task-list { max-height: 40vh; }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="top-bar">
+      <div class="brand">
+        <a href="/"><img src="/images/logo.svg" alt="DevOps Todo" class="logo" /></a>
+        <h1>DevOps Todo</h1>
+      </div>
+      <div class="top-actions">
+        <button id="theme-toggle" aria-label="Toggle dark mode">🌙</button>
+        <button id="logout-btn" class="secondary">Log out</button>
+      </div>
+    </header>
+
+    <main class="container">
+      <div class="bento">
+        <section class="card span-2" id="dashboard-card">
+          <header class="card-header">
+            <h2>Dashboard</h2>
+            <p class="muted" id="welcome-message"></p>
+          </header>
+          <div class="stats-grid" id="stats-grid"></div>
+          <div class="chart" id="daily-chart"></div>
+        </section>
+
+        <section class="card sidebar" id="filters-card">
+          <header class="card-header">
+            <h2>Filters</h2>
+          </header>
+          <div class="stack">
+            <label class="chip"><input type="radio" name="filter" value="all" checked />All</label>
+            <label class="chip"><input type="radio" name="filter" value="today" />Today</label>
+            <label class="chip"><input type="radio" name="filter" value="thisWeek" />This Week</label>
+          </div>
+          <div class="field">
+            <label for="search-input">Search</label>
+            <input id="search-input" type="search" placeholder="Find tasks" />
+          </div>
+          <div class="field">
+            <label for="tags-input">Tags</label>
+            <input id="tags-input" type="text" placeholder="Work,Personal" />
+          </div>
+          <div class="field">
+            <label for="sort-select">Sort by</label>
+            <select id="sort-select">
+              <option value="created">Recently added</option>
+              <option value="dueDate">Due date</option>
+              <option value="priority">Priority</option>
+              <option value="status">Status</option>
+            </select>
+          </div>
+        </section>
+
+        <section class="card span-2" id="create-card">
+          <header class="card-header">
+            <h2>New Task</h2>
+          </header>
+          <form id="task-form" class="grid">
+            <div class="field span-2">
+              <label for="task-title">Title</label>
+              <input id="task-title" name="title" type="text" placeholder="Plan sprint review" required />
+            </div>
+            <div class="field span-2">
+              <label for="task-notes">Notes</label>
+              <textarea id="task-notes" name="notes" rows="3" placeholder="Add any details"></textarea>
+            </div>
+            <div class="field">
+              <label for="task-due">Due date</label>
+              <input id="task-due" name="dueDate" type="date" />
+            </div>
+            <div class="field">
+              <label for="task-priority">Priority</label>
+              <select id="task-priority" name="priority">
+                <option value="low">Low</option>
+                <option value="medium" selected>Medium</option>
+                <option value="high">High</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="task-tags">Tags</label>
+              <input id="task-tags" name="tags" type="text" placeholder="Work,Planning" />
+            </div>
+            <div class="field">
+              <label for="task-reminder">Reminder (minutes before)</label>
+              <input id="task-reminder" name="reminder" type="number" min="0" step="5" />
+            </div>
+            <button type="submit" class="primary span-2">Add Task</button>
+          </form>
+        </section>
+
+        <section class="card span-2" id="tasks-card">
+          <header class="card-header">
+            <h2>Tasks</h2>
+          </header>
+          <div id="tasks-list" class="task-list"></div>
+        </section>
+      </div>
+    </main>
+
+    <template id="task-template">
+      <article class="task">
+        <div class="task-main">
+          <input type="checkbox" class="task-toggle" />
+          <div class="task-content">
+            <h3 class="task-title"></h3>
+            <p class="task-notes"></p>
+            <div class="task-meta"></div>
+          </div>
+        </div>
+        <div class="task-actions">
+          <button class="small secondary edit-task">Edit</button>
+          <button class="small danger delete-task">Delete</button>
+        </div>
+      </article>
+    </template>
+
+    <script type="module" src="/js/dashboard.js"></script>
+  </body>
+</html>
