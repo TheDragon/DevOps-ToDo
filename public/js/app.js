@@ -154,6 +154,7 @@ const renderTasks = (tasks) => {
         await apiFetch(`/api/tasks/${task._id}/toggle`, { method: 'PATCH' });
         showToast('Task updated');
         await loadTasks();
+        await loadDashboard();
       } catch (error) {
         showToast(error.message);
       }
@@ -177,6 +178,7 @@ const renderTasks = (tasks) => {
         await apiFetch(`/api/tasks/${task._id}`, { method: 'DELETE' });
         showToast('Task deleted');
         await loadTasks();
+        await loadDashboard();
       } catch (error) {
         showToast(error.message);
       }
@@ -274,6 +276,20 @@ const checkSession = async () => {
   }
 };
 
+const normalizeRegistrationOptions = (opt) => {
+  // Accept common shapes: opt, {publicKey: {...}}, {options: {...}}
+  const pk = opt?.publicKey || opt?.options || opt;
+  // Some servers accidentally nest twice
+  const maybePk = pk?.publicKey || pk;
+  return maybePk;
+};
+
+const normalizeAuthenticationOptions = (opt) => {
+  const pk = opt?.publicKey || opt?.options || opt;
+  const maybePk = pk?.publicKey || pk;
+  return maybePk;
+};
+
 registerForm.addEventListener('submit', async (event) => {
   event.preventDefault();
   const formData = new FormData(registerForm);
@@ -284,7 +300,27 @@ registerForm.addEventListener('submit', async (event) => {
       body: JSON.stringify(payload),
     });
 
-    const attResp = await SimpleWebAuthnBrowser.startRegistration(options);
+    const regOptions = normalizeRegistrationOptions(options);
+    console.debug('Normalized registration options:', regOptions);
+    if (!regOptions || !regOptions.challenge) {
+      console.debug('Registration options received (raw):', options);
+      throw new Error('Invalid registration options from server');
+    }
+    if (!regOptions.user || !regOptions.user.id) {
+      // Fallback: build user block from API's returned user payload
+      if (user && user.id && user.email && user.name) {
+        regOptions.user = {
+          id: user.id,
+          name: user.email,
+          displayName: user.name,
+        };
+        console.debug('Filled missing user block from payload:', regOptions.user);
+      } else {
+        console.debug('Registration options missing user or id and no fallback:', regOptions);
+        throw new Error('Invalid registration options from server');
+      }
+    }
+    const attResp = await SimpleWebAuthnBrowser.startRegistration(regOptions);
 
     const result = await apiFetch('/api/auth/register/complete', {
       method: 'POST',
@@ -310,7 +346,12 @@ loginForm.addEventListener('submit', async (event) => {
       body: JSON.stringify(payload),
     });
 
-    const assertion = await SimpleWebAuthnBrowser.startAuthentication(options);
+    const authOptions = normalizeAuthenticationOptions(options);
+    if (!authOptions || !authOptions.challenge) {
+      console.debug('Authentication options received:', options);
+      throw new Error('Invalid authentication options from server');
+    }
+    const assertion = await SimpleWebAuthnBrowser.startAuthentication(authOptions);
 
     const { user } = await apiFetch('/api/auth/login/complete', {
       method: 'POST',

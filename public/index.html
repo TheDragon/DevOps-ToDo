@@ -3,14 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>DevOps Todo - Passwordless Productivity</title>
+    <title>DevOps Todo — Minimal Productivity</title>
     <link rel="stylesheet" href="/css/styles.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   </head>
   <body>
     <header class="top-bar">
@@ -20,149 +17,41 @@
       </div>
       <div class="top-actions">
         <button id="theme-toggle" aria-label="Toggle dark mode">🌙</button>
-        <button id="logout-btn" class="secondary">Log out</button>
+        <a class="button secondary" href="/login.html">Login</a>
+        <a class="button primary" href="/register.html">Register</a>
       </div>
     </header>
 
     <main class="container">
-      <section id="auth-section" class="card">
-        <h2>Passkey Login</h2>
-        <p class="muted">
-          Register once with your device, then sign in instantly with a passkey.
-        </p>
-        <form id="register-form" class="stack">
-          <div class="field">
-            <label for="register-name">Name</label>
-            <input id="register-name" name="name" type="text" required />
-          </div>
-          <div class="field">
-            <label for="register-email">Email</label>
-            <input id="register-email" name="email" type="email" required />
-          </div>
-          <div class="field">
-            <label for="register-avatar">Avatar URL (optional)</label>
-            <input id="register-avatar" name="avatarUrl" type="url" placeholder="https://" />
-          </div>
-          <button type="submit" class="primary">Register Passkey</button>
-        </form>
-
-        <div class="divider">
-          <span>or</span>
+      <section class="hero">
+        <h2>Focus on tasks, not passwords</h2>
+        <p class="muted">Simple, secure, passwordless task management with passkeys.</p>
+        <div class="cta">
+          <a class="button primary" href="/register.html">Get Started</a>
+          <a class="button" href="/login.html">I already have an account</a>
         </div>
-
-        <form id="login-form" class="stack">
-          <div class="field">
-            <label for="login-email">Email</label>
-            <input id="login-email" name="email" type="email" required />
-          </div>
-          <button type="submit" class="primary">Sign in with Passkey</button>
-        </form>
       </section>
-
-      <section id="app-section" class="hidden">
+      <section class="card features">
         <div class="grid">
-          <section class="card span-2" id="dashboard-card">
-            <header class="card-header">
-              <h2>Dashboard</h2>
-              <p class="muted" id="welcome-message"></p>
-            </header>
-            <div class="stats-grid" id="stats-grid"></div>
-            <div class="chart" id="daily-chart"></div>
-          </section>
-
-          <section class="card" id="filters-card">
-            <header class="card-header">
-              <h2>Filters</h2>
-            </header>
-            <div class="stack">
-              <label class="chip"><input type="radio" name="filter" value="all" checked />All</label>
-              <label class="chip"><input type="radio" name="filter" value="today" />Today</label>
-              <label class="chip"><input type="radio" name="filter" value="thisWeek" />This Week</label>
-            </div>
-            <div class="field">
-              <label for="search-input">Search</label>
-              <input id="search-input" type="search" placeholder="Find tasks" />
-            </div>
-            <div class="field">
-              <label for="tags-input">Tags</label>
-              <input id="tags-input" type="text" placeholder="Work,Personal" />
-            </div>
-            <div class="field">
-              <label for="sort-select">Sort by</label>
-              <select id="sort-select">
-                <option value="created">Recently added</option>
-                <option value="dueDate">Due date</option>
-                <option value="priority">Priority</option>
-                <option value="status">Status</option>
-              </select>
-            </div>
-          </section>
-
-          <section class="card span-2" id="create-card">
-            <header class="card-header">
-              <h2>New Task</h2>
-            </header>
-            <form id="task-form" class="grid">
-              <div class="field span-2">
-                <label for="task-title">Title</label>
-                <input id="task-title" name="title" type="text" placeholder="Plan sprint review" required />
-              </div>
-              <div class="field span-2">
-                <label for="task-notes">Notes</label>
-                <textarea id="task-notes" name="notes" rows="3" placeholder="Add any details"></textarea>
-              </div>
-              <div class="field">
-                <label for="task-due">Due date</label>
-                <input id="task-due" name="dueDate" type="date" />
-              </div>
-              <div class="field">
-                <label for="task-priority">Priority</label>
-                <select id="task-priority" name="priority">
-                  <option value="low">Low</option>
-                  <option value="medium" selected>Medium</option>
-                  <option value="high">High</option>
-                </select>
-              </div>
-              <div class="field">
-                <label for="task-tags">Tags</label>
-                <input id="task-tags" name="tags" type="text" placeholder="Work,Planning" />
-              </div>
-              <div class="field">
-                <label for="task-reminder">Reminder (minutes before)</label>
-                <input id="task-reminder" name="reminder" type="number" min="0" step="5" />
-              </div>
-              <button type="submit" class="primary span-2">Add Task</button>
-            </form>
-          </section>
-
-          <section class="card span-2" id="tasks-card">
-            <header class="card-header">
-              <h2>Tasks</h2>
-            </header>
-            <div id="tasks-list" class="task-list"></div>
-          </section>
+          <div>
+            <h3>Passkeys</h3>
+            <p class="muted">Register once with your device and sign in instantly.</p>
+          </div>
+          <div>
+            <h3>Smart Dashboard</h3>
+            <p class="muted">See totals, trends, and your streak at a glance.</p>
+          </div>
+          <div>
+            <h3>Minimal & Fast</h3>
+            <p class="muted">No fluff. Clean design that gets out of your way.</p>
+          </div>
         </div>
       </section>
     </main>
 
-    <template id="task-template">
-      <article class="task">
-        <div class="task-main">
-          <input type="checkbox" class="task-toggle" />
-          <div class="task-content">
-            <h3 class="task-title"></h3>
-            <p class="task-notes"></p>
-            <div class="task-meta"></div>
-          </div>
-        </div>
-        <div class="task-actions">
-          <button class="small secondary edit-task">Edit</button>
-          <button class="small danger delete-task">Delete</button>
-        </div>
-      </article>
-    </template>
-
-    <script src="https://unpkg.com/@simplewebauthn/browser/dist/bundle/index.umd.min.js"></script>
-    <script type="module" src="/js/app.js"></script>
+    <script type="module">
+      import { initTheme } from '/js/common.js';
+      initTheme();
+    </script>
   </body>
-</html>
+  </html>

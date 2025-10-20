@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login — DevOps Todo</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <header class="top-bar">
+      <div class="brand">
+        <a href="/"><img src="/images/logo.svg" alt="DevOps Todo" class="logo" /></a>
+        <h1>DevOps Todo</h1>
+      </div>
+      <div class="top-actions">
+        <button id="theme-toggle" aria-label="Toggle dark mode">🌙</button>
+        <a class="button secondary" href="/register.html">Register</a>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="card" style="max-width:560px;margin:0 auto;">
+        <header class="card-header">
+          <h2>Sign in with Passkey</h2>
+        </header>
+        <form id="login-form" class="stack">
+          <div class="field">
+            <label for="login-email">Email</label>
+            <input id="login-email" name="email" type="email" required />
+          </div>
+          <button type="submit" class="primary">Sign in</button>
+        </form>
+      </section>
+    </main>
+
+    <script src="https://unpkg.com/@simplewebauthn/browser@9.0.0/dist/bundle/index.umd.min.js"></script>
+    <script type="module" src="/js/auth.js"></script>
+  </body>
+  </html>

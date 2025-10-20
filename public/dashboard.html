@@ -8,47 +8,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <style>
-      /* Dashboard-only layout: lock page height; tasks scroll inside tile */
-      html, body { height: 100%; }
-      body { overflow: hidden; }
-      main.container { height: calc(100dvh - 72px); overflow: hidden; }
-
-      /* Bento grid: 12 cols × 8 rows */
-      .bento { height: 100%; display: grid; gap: 16px; grid-template-columns: repeat(12, 1fr); grid-template-rows: repeat(8, 1fr); }
-      .bento .card { margin: 0; height: 100%; display: flex; flex-direction: column; }
-      .bento .card:hover { transform: none; box-shadow: 0 10px 30px rgba(15,23,42,.06); }
-
-      /* Tile placement */
-      #dashboard-card { grid-column: 1 / span 8; grid-row: 1 / span 3; }
-      #filters-card  { grid-column: 9 / span 4; grid-row: 1 / span 4; }
-      #create-card   { grid-column: 1 / span 8; grid-row: 4 / span 5; }
-      #tasks-card    { grid-column: 9 / span 4; grid-row: 5 / span 4; overflow: hidden; }
-
-      /* Chart grows within tile */
-      #dashboard-card .chart { flex: 1; min-height: 0; }
-
-      /* New Task form compaction */
-      #create-card .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-      #create-card .field.span-2 { grid-column: 1 / span 2; }
-      #create-card button[type="submit"] { margin-top: 4px; }
-
-      /* Tasks list scrolls within its tile */
-      #tasks-card .card-header { margin-bottom: 0.5rem; }
-      #tasks-card .task-list { flex: 1; min-height: 0; overflow: auto; padding-right: 4px; }
-
-      /* Compact filters */
-      #filters-card .stack { gap: 0.5rem; }
-
-      /* Narrow screens: stack with safe heights */
-      @media (max-width: 1100px) {
-        body { overflow: auto; }
-        main.container { height: auto; overflow: visible; }
-        .bento { grid-template-columns: 1fr; grid-template-rows: none; }
-        #dashboard-card, #filters-card, #create-card, #tasks-card { grid-column: auto; grid-row: auto; height: auto; }
-        #tasks-card .task-list { max-height: 40vh; }
-      }
-    </style>
   </head>
   <body>
     <header class="top-bar">
@@ -63,7 +22,7 @@
     </header>
 
     <main class="container">
-      <div class="bento">
+      <div class="grid">
         <section class="card span-2" id="dashboard-card">
           <header class="card-header">
             <h2>Dashboard</h2>
