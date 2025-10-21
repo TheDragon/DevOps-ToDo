@@ -8,6 +8,13 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      /* Dashboard: two-row layout
+         Row 1: Tasks | Filters
+         Row 2: Dashboard | Create Task */
+      .row-grid { display: grid; gap: 1.5rem; grid-template-columns: 2fr 1fr; align-items: start; }
+      @media (max-width: 980px) { .row-grid { grid-template-columns: 1fr; } }
+    </style>
   </head>
   <body>
     <header class="top-bar">
@@ -22,17 +29,15 @@
     </header>
 
     <main class="container">
-      <div class="grid">
-        <section class="card span-2" id="dashboard-card">
+      <div class="row-grid">
+        <section class="card" id="tasks-card">
           <header class="card-header">
-            <h2>Dashboard</h2>
-            <p class="muted" id="welcome-message"></p>
+            <h2>Tasks</h2>
           </header>
-          <div class="stats-grid" id="stats-grid"></div>
-          <div class="chart" id="daily-chart"></div>
+          <div id="tasks-list" class="task-list"></div>
         </section>
 
-        <section class="card sidebar" id="filters-card">
+        <section class="card" id="filters-card">
           <header class="card-header">
             <h2>Filters</h2>
           </header>
@@ -59,8 +64,19 @@
             </select>
           </div>
         </section>
+      </div>
 
-        <section class="card span-2" id="create-card">
+      <div class="row-grid" style="margin-top: 1.5rem;">
+        <section class="card" id="dashboard-card">
+          <header class="card-header">
+            <h2>Dashboard</h2>
+            <p class="muted" id="welcome-message"></p>
+          </header>
+          <div class="stats-grid" id="stats-grid"></div>
+          <div class="chart" id="daily-chart"></div>
+        </section>
+
+        <section class="card" id="create-card">
           <header class="card-header">
             <h2>New Task</h2>
           </header>
@@ -95,13 +111,6 @@
             </div>
             <button type="submit" class="primary span-2">Add Task</button>
           </form>
-        </section>
-
-        <section class="card span-2" id="tasks-card">
-          <header class="card-header">
-            <h2>Tasks</h2>
-          </header>
-          <div id="tasks-list" class="task-list"></div>
         </section>
       </div>
     </main>
